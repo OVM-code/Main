@@ -34,6 +34,18 @@ to what's actually being waited on.
    every few seconds just burns turns restating "still waiting" — space
    checks to roughly match the process's own pace.
 
+## Decision table — what am I waiting on?
+
+| Waiting on | Correct mechanism |
+|---|---|
+| Background work the harness tracks (subagent, background command, workflow) | Nothing — you'll be re-invoked when it finishes. Schedule only a *long* fallback (20+ min) in case it hangs. |
+| External state that changes in minutes (a CI run, a deploy in progress) | Check-ins spaced to the process's own pace, kept under the ~5-min context-cache window (e.g. every ~4 min for an 8-min CI run — two warm checks, not eight). |
+| External state that changes in tens of minutes or hours (review, slow deploy, remote queue) | Commit to long check-ins, 20-30+ min apart. |
+| Nothing specific — idle heartbeat on a subscription | 20-30 min. The human can always interrupt sooner. |
+
+Never: a foreground sleep loop, or a check-in right at the cache boundary
+(pays the full reload cost while buying almost no extra wait).
+
 ## Worked example (this project)
 
 The scheduling tooling available in this environment enforces rule 2

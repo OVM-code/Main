@@ -41,6 +41,32 @@ picking the cheapest structure that gets it.
    adversarial verify, a synthesis stage. Don't apply audit-scale
    orchestration to a quick-check request.
 
+## Shapes to copy
+
+Default shape — pipeline, no barrier (item A can be verifying while item B
+is still being reviewed):
+
+```js
+const results = await pipeline(
+  items,
+  item  => agent(findPrompt(item),   {phase: 'Find',   schema: FINDINGS}),
+  found => agent(verifyPrompt(found), {phase: 'Verify', schema: VERDICT}),
+)
+```
+
+Barrier — ONLY when stage 2 needs all of stage 1 at once (here: dedup
+across every finder's output before paying for verification):
+
+```js
+const all      = await parallel(items.map(i => () => agent(findPrompt(i), {schema: FINDINGS})))
+const deduped  = dedupe(all.filter(Boolean).flat())   // cross-item dependency — barrier earned
+const verified = await parallel(deduped.map(f => () => agent(verifyPrompt(f), {schema: VERDICT})))
+```
+
+The smell test: if the code between two `parallel()` calls is a plain
+`.flat()`, `.map()`, or `.filter()` with no cross-item logic, the barrier
+is unearned — fold the transform into a pipeline stage.
+
 ## Worked example (this project)
 
 The orchestration tooling available in this environment models exactly this

@@ -64,8 +64,10 @@ That buries a load-bearing assumption inside the deliverable where the human
 would only find it by reading closely.
 
 Right move: stop before writing anything, state the discrepancy in one
-sentence, and offer 2-4 concrete interpretations for the human to pick from
+sentence, and offer concrete interpretations for the human to pick from
 (wrong repo / meta-skill-library about the agent itself / scaffold a
-placeholder project first). The human picked "meta skill library" — a fourth
-option I hadn't fully anticipated blending with the given choices, but the
-question surfaced it before any wasted work.
+placeholder project first). The human picked "meta skill library" in
+seconds, and the entire deliverable changed shape based on that answer —
+*before* any files were written. Had the assistant guessed and guessed
+wrong, the cost would have been the whole turn plus the human's time
+discovering the guess buried in the output.

@@ -38,13 +38,28 @@ correct diff, not the most complete-feeling one.
 8. **Prefer editing an existing file to creating a new one**, and don't
    create documentation files nobody asked for.
 
+## Mechanical check — run on your diff before committing
+
+For each hunk, ask: *if I deleted this hunk, would the task still be done?*
+If yes, delete it. Apply specifically to: comments, helper functions with
+one caller, validation of internal data, `try/catch` around code that can't
+throw, renamed variables the task didn't ask about, and any file whose
+existence the task didn't require.
+
 ## Worked example (this project)
 
-This very skill library follows its own rule 8: fifteen new files were
-created only because the deliverable *is* a set of files — not because new
-files are the default move. And within each file, the instruction that
-produced this whole library was explicit that "no comments" is the default
-posture for code and that the *why*, not the *what*, is the only thing worth
-writing down — which is the same principle this file itself is following:
-every rule here states a *why* (what breaks without it), not just a
-restatement of the rule's name.
+Rule 6 (task context belongs in the commit, not the artifact) has a
+checkable instance in this repo's first commit. The load-bearing context for
+this whole library — *the repository was empty, so the skills document
+session disciplines rather than codebase conventions* — appears in exactly
+one place: the commit message body ("Repository had no existing history or
+code to derive project-specific skills from, so this documents…"). None of
+the 16 skill files opens with a header repeating that context, even though
+it would have felt natural to stamp it on each one.
+
+Why that's the right split: the commit message is versioned *with* the
+moment the decision was made and never rots; the same paragraph pasted into
+16 files becomes 16 copies to keep consistent, and each one addresses a
+reader who — a year from now — cares about what the skill says, not about
+the circumstances of the session that wrote it. The minimal diff is the one
+where each fact lives in exactly one place, chosen by who needs it.

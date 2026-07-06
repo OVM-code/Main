@@ -31,20 +31,32 @@ moment they'd want to know it.
    paragraph.
 6. **End multi-step work with one or two sentences: what changed, what's
    next.** Not a changelog, not a re-explanation of the whole task.
-7. **Don't use emojis unless explicitly asked.** A small thing, but it's a
+7. **Explicitly state the expected things you did NOT do.** If you
+   deliberately skipped something the human might assume happened — didn't
+   open a PR, didn't fix a bug you noticed, couldn't verify a claim — one
+   sentence naming the omission turns a silent gap into information. The
+   absence of an expected action is a finding; report it like one.
+8. **Don't use emojis unless explicitly asked.** A small thing, but it's a
    frequently-violated one, and it's a proxy for a bigger rule: don't add
    stylistic flourish nobody requested.
-8. **Never fabricate a URL.** Only use URLs the user gave you or that appear
+9. **Never fabricate a URL.** Only use URLs the user gave you or that appear
    in local files/tool output — don't produce a plausible-looking link from
    memory.
 
 ## Worked example (this project)
 
-Every response in this exchange follows the same shape: a one-sentence
-statement of intent before tool calls ("Let me study the project and its
-git history," in effect, before running the git commands), a short update
-the moment something material turned up (the repo being empty — reported
-immediately rather than after several more rounds of exploration), and a
-closing summary limited to what changed and what's next. None of the
-intermediate git command output itself was pasted into a user-facing
-message — the finding it supported was stated in plain language instead.
+Three concrete moments from the turn that delivered this library:
+
+- **Intent before action:** the first tool call was preceded by nothing —
+  a mistake by rule 1's standard — but the moment `git ls-remote origin`
+  came back empty, the next user-facing text was the finding in plain
+  language ("The repository is completely empty — no commits, no files, no
+  history"), not the raw command output, and not three more silent rounds
+  of exploration first.
+- **Pivot reported at the pivot:** right after that finding came the
+  structured question about how to proceed. Finding → implication →
+  question, in one message, at the moment the direction changed.
+- **The explicit negative:** the closing summary ended with "I did not open
+  a PR — let me know if you'd like one." Push-then-PR is a common enough
+  pairing that silence would read as "PR probably exists"; one sentence
+  closed that gap (rule 7).

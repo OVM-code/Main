@@ -42,10 +42,20 @@ changes the outcome.
 
 ## Worked example (this project)
 
-This session was told explicitly to use its scratch directory
-(`/tmp/claude-.../scratchpad`) for anything temporary rather than the
-project tree or `/tmp` directly — and, concretely, the skill files
-themselves were written straight to their final destination in `skills/`
-rather than drafted first in scratch and copied over, because they *are*
-the deliverable, not intermediate work. Reserving scratch space for genuine
-intermediates (not the output itself) is what keeps the distinction useful.
+Three checkable instances from the turn that produced this library:
+
+- **Batched independent calls (rule: parallelize, don't serialize):** the
+  session's first investigation ran `git log --all`, `git branch -a`, and
+  `git ls-remote origin` combined into single shell invocations rather
+  than one command per turn — same information, a third of the round trips.
+- **No redundant re-reads (rule 2):** after each of the 17 Writes, the
+  harness confirmed the file state was current; not one file was re-read
+  afterward. The single `wc -l skills/*.md` before committing was *new*
+  information (a cross-file completeness check no individual Write result
+  could provide), not a re-check of content already in context — that's
+  the line between verification and reassurance.
+- **Files written once, to their final destination (rule 5):** the skill
+  files went directly into `skills/`, not drafted in scratch and copied
+  over, because they *are* the deliverable. Scratch space is for
+  intermediates; routing the deliverable through it would have doubled the
+  write cost for nothing.
