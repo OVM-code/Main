@@ -61,6 +61,12 @@ actually does — don't carry a specific performance number or install count
 from wherever the request came from into this repo as a verified fact about
 this system; that breaks rule 6 before rule 1 has even been applied.
 
+Third-party plugins claiming the same pattern (e.g. a marketplace plugin
+named `ralph-loop`) may or may not be present in a given install — checking
+the local `/plugin` catalog is itself an application of rule 6: verify it's
+actually installed and does what it claims before relying on it, rather than
+carrying over a marketplace description as fact.
+
 ## Worked example (this project)
 
 This file's own rule 3 is the checkable example: `communication-
