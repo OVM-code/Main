@@ -6,6 +6,12 @@ humans) can follow the disciplines mechanically. `README.md` explains the anatom
 provenance. You — the session reading this — are both the audience and the maintainer:
 the skills apply to your own work here, and this file governs how to change them.
 
+This repo also carries a runnable skill at
+`.claude/skills/apply-maintainable-treatment/` — the repeatable procedure for making any
+*other* repo safely agent-maintainable (contract → executable validator → CI, verified by
+a deliberately-broken negative test). It is invoked in other repos, not here, and is not
+part of the `skills/` discipline library, so the validator below does not check it.
+
 ## The contract
 
 **1. `skills/INDEX.md` is the index-of-record.** Every skill file appears in it exactly
