@@ -135,13 +135,16 @@ const verdicts = (await parallel(lenses.map(l => () =>
     .then(v => v && { lens: l.key, ...v })
 ))).filter(Boolean)
 
-const failed = verdicts.filter(v => !v.passes)
+// A lens can self-report passes:true while still listing real issues (a soft-fail,
+// e.g. "this doesn't break the port but the field name is wrong") — repair on any
+// reported issue, not only on a lens that failed outright, or those slip through.
+const flaggedIssues = verdicts.flatMap(v => (v.issues || []).map(issue => ({ lens: v.lens, passes: v.passes, issue })))
 
 let finalSystem = transformed
-if (failed.length) {
-  log(`${failed.length} verification lens(es) found issues — repairing before finalizing`)
+if (flaggedIssues.length) {
+  log(`${flaggedIssues.length} issue(s) flagged across ${verdicts.length} verification lenses — repairing before finalizing`)
   finalSystem = await agent(
-    `Fix the following ported AI system based on these verification issues, without breaking anything that already passed.\n\nISSUES:\n${JSON.stringify(failed)}\n\nPORTED SYSTEM TO FIX:\n${transformed}\n\nReturn the complete corrected system.`,
+    `Fix the following ported AI system based on these verification issues, without breaking anything that already passed. Some issues come from a lens that otherwise judged the port passing ("passes": true) — fix them anyway if they're real, since a passing lens can still flag a genuine defect.\n\nISSUES:\n${JSON.stringify(flaggedIssues)}\n\nPORTED SYSTEM TO FIX:\n${transformed}\n\nReturn the complete corrected system.`,
     { label: 'repair', phase: 'Verify', effort: 'high' }
   )
 }
@@ -160,6 +163,6 @@ return {
   compatibilityMap: map,
   portedSystem: finalSystem,
   verification: verdicts,
-  repaired: failed.length > 0,
+  repaired: flaggedIssues.length > 0,
   outputPath: outputPath || null,
 }
