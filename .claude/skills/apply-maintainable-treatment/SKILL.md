@@ -16,20 +16,32 @@ validator on every change. This skill is the repeatable form of that procedure.
 *load-bearing* in THIS repo — the invariant that, if violated, corrupts the system
 silently — and making that specific thing impossible to break unnoticed. A generic
 `CLAUDE.md` dropped into every repo is worse than nothing: it reads authoritative while
-protecting the wrong things, which teaches confident fabrication (see
-`skills/verify-dont-assert.md`, `skills/scoping-the-ask.md`). Do the diagnosis every time.
+protecting the wrong things, which teaches confident fabrication (background rationale:
+`skills/verify-dont-assert.md`, `skills/scoping-the-ask.md` — not required reading under
+a tight budget). Do the diagnosis every time.
 
 Real examples of "the sacred thing" from repos already treated — note how different each is:
 record ids that must never be regenerated; `CREATE TABLE IF NOT EXISTS` that silently
 ignores schema edits in production; a CSV that is the single source of truth; an index
 that must stay a bijection with its files; bilingual page-parity and honest placeholders.
 
+**Fence, don't fix.** The diagnosis will often surface real latent bugs (a
+nondeterministic fallback, missing escaping, a race). The treatment is additive-only:
+contract, validator, CI — never product-code changes. Make the validator catch the
+hazard's consequences, and list the bug itself as a recommended follow-up in the PR
+body. Why: mixing guardrails with behavior changes makes the diff unreviewable, and
+fixing on your own initiative is scope creep (`skills/scoping-the-ask.md`) — the owner
+decides what to fix and when.
+
 ## Procedure
 
 1. **Survey.** Read any existing `CLAUDE.md` / `AGENTS.md` / `README`, map the file tree,
    and identify what the repo *is*: application code, generated data, hand-maintained
    documents, static sites, config. Read enough of the actual code/data to understand how
-   it is consumed and where a wrong write does damage. Do not skim.
+   it is consumed and where a wrong write does damage. Do not skim. Run whatever
+   verification already exists (tests, lint, build) to establish a green baseline before
+   you change anything. **If a contract or validator already exists, your job is to
+   extend it** — a second parallel contract is drift waiting to happen; never duplicate.
 2. **Diagnose what is sacred.** Name the 1–5 invariants that, if broken, corrupt the
    system silently or irreversibly — the failures no test currently catches and a
    well-meaning agent would plausibly cause. This is the judgment step; everything else is
@@ -41,28 +53,51 @@ that must stay a bijection with its files; bilingual page-parity and honest plac
    playbooks for the common changes an agent will actually make.
 4. **Build the executable validator** — zero dependencies, in the repo's own language
    (`node check.mjs` for JS/docs/data; the repo's test runner otherwise). It must
-   mechanically enforce every invariant from step 3. For a running application, this is a
-   **smoke test** that boots the built app and exercises the real contract end-to-end, not
-   just a static lint. Add a script alias (`npm run check`) if there is a manifest.
+   mechanically enforce every invariant from step 3. Match its shape to the repo's shape:
+   - **Running application** → a smoke test that boots the *built* app against throwaway
+     local resources (never production credentials) and exercises the real contract
+     end-to-end, not just a static lint.
+   - **Generator / build-artifact repo** (static sites, feeds, compiled docs) → run the
+     real build in a scratch copy and byte-compare against the committed artifact. If
+     rebuilding unchanged inputs is not byte-identical (timestamps, randomness), that
+     nondeterminism is itself a finding — fence it and flag it.
+   - **Invariants about immutability over time** ("published X never changes") cannot be
+     checked from the working tree alone — materialize a committed reference (an
+     append-only ledger, a lockfile) for the validator to compare against. A git-diff
+     check is not enough: in CI the break is already committed, so there is no diff.
+   Add a script alias (`npm run check`) if there is a manifest.
 5. **Wire CI** — a `.github/workflows/*.yml` that runs the validator on every push and PR,
-   needing no secrets and never touching production.
-6. **Verify BOTH directions.** The validator must pass on the current repo, AND you must
-   deliberately break each invariant in a throwaway copy and confirm the validator fails
-   (exit 1) with a clear message. A validator never seen to fail proves nothing — this
+   needing no secrets and never touching production. If you cannot exercise CI itself
+   (no remote, Actions disabled), confirm the workflow's steps are exactly the commands
+   you already ran locally — no untested extras.
+6. **Verify BOTH directions, plus a happy-path control.** The validator must pass on the
+   current repo; each invariant, deliberately broken in a throwaway copy, must fail
+   (exit 1) with a message naming the consequence; and a *legitimate* change made by the
+   contract's own playbook must still pass — a validator that also rejects correct work
+   will get deleted, not obeyed. A validator never seen to fail proves nothing — this
    step is non-negotiable.
 7. **Branch, commit, PR.** Work on `claude/maintainable-treatment` (or the repo's branch
-   convention). The commit/PR body states what was found sacred and how it is now enforced.
-   Do not merge; leave the PR for the owner.
+   convention). The commit/PR body states what was found sacred and how it is now
+   enforced, lists any latent bugs found-but-fenced (see "Fence, don't fix"), and —
+   since a fan-out agent cannot ask questions — records any diagnosis you are *unsure*
+   about as an open question rather than enshrining a guess. Do not merge; leave the PR
+   for the owner.
 
 ## Mechanical checklist — before calling it done
 
-- [ ] Contract lives in the file the repo's agents already load (`CLAUDE.md`/`AGENTS.md`).
+- [ ] Existing verification ran green as a baseline before any change.
+- [ ] Contract lives in the file the repo's agents already load (`CLAUDE.md`/`AGENTS.md`);
+      an existing contract/validator was extended, not duplicated.
 - [ ] Every invariant has a stated *why* and a matching validator check.
 - [ ] Validator is zero-dependency and runs with one command.
-- [ ] Apps have a smoke test that drives real behavior, not only static checks.
-- [ ] CI runs the validator on push + PR.
+- [ ] Apps: smoke test drives real behavior on throwaway resources. Generators: real
+      build byte-compared in a scratch copy. Immutability invariants: committed reference.
+- [ ] CI runs the validator on push + PR; its steps are exactly the commands run locally.
 - [ ] Negative test done: each invariant, broken in a scratch copy, is caught (exit 1).
-- [ ] Branch pushed, PR body names the sacred invariant(s); nothing merged.
+- [ ] Happy-path control done: a playbook-correct change still passes.
+- [ ] No product code changed; latent bugs are listed in the PR body, not fixed.
+- [ ] Branch pushed, PR body names the sacred invariant(s) and any open uncertainty;
+      nothing merged.
 
 ## Running it across many repos in parallel
 
@@ -86,3 +121,12 @@ honest placeholder stubs). Each got a different contract and a different `check.
 in each the validator was proven to fail on a deliberately broken scratch copy before the
 PR was opened. The diagnosis differed every time; the procedure did not — which is why it
 is written down here rather than re-derived per repo.
+
+The skill was then itself tested end-to-end: a fresh agent, given only this file and a
+synthetic podcast-feed repo with a planted trap (a `Date.now()` guid fallback in the
+build script, documented consequence buried in the README), independently diagnosed the
+guid-immutability invariant plus two the author hadn't planted, invented a committed
+guid ledger to make "never changes" checkable in CI, and verified with eleven negative
+scenarios plus a happy-path control. Its feedback produced the "Fence, don't fix" rule,
+the generator/ledger/CI-fallback clauses in steps 4–5, and the happy-path control in
+step 6.
