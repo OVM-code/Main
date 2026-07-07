@@ -9,18 +9,22 @@ from experience.
 
 ## What's in here
 
-Everything lives in [`skills/`](skills/): 16 skill files plus an index.
+Everything lives in [`skills/`](skills/): 18 skill files plus an index.
 
-- **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 16
+- **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 18
   skills by quality bought per token spent reading, and tells you which to
   read in full versus which to look up on demand.
-- **16 skill files** — one discipline each: scoping requests, planning
+- **18 skill files** — one discipline each: scoping requests, planning
   before editing, verifying work instead of asserting it, judging blast
   radius before irreversible actions, root-cause debugging, delegating to
   subagents, multi-agent orchestration, tool selection, communication,
-  code minimalism, resolving ambiguity, context/token budgeting, GitHub/PR
-  conduct, security boundaries, async scheduling, and a consolidated
-  checklist of failure patterns that cost real time.
+  code minimalism, resolving ambiguity, context/token budgeting,
+  **which model tier and reasoning effort a step actually needs (and how
+  that choice minimizes token cost)**, GitHub/PR conduct, security
+  boundaries, async scheduling, a consolidated checklist of failure
+  patterns that cost real time, and **an explicit opt-in "operator mode"
+  contract** for users who want a stricter, terser default than this
+  library ships with.
 
 ## Anatomy of a skill file
 
@@ -48,8 +52,16 @@ Every skill follows the same shape, on purpose:
 - **Before any high-stakes turn:** skim `failure-patterns.md` like a
   pre-flight checklist. Recognizing "this is pattern #6" mid-mistake is
   faster than reconstructing the right instinct from scratch.
+- **About to spawn a subagent or run a workflow:** check
+  `model-selection-discipline.md` first — it's the rule set for which
+  model tier and reasoning effort each step actually needs, so a fan-out
+  doesn't default to the most expensive option for every call.
+- **A human explicitly asks for a stricter, terser operating contract:**
+  read `operator-mode.md`. It's opt-in and, on one point, deliberately
+  overrides `communication-discipline.md`'s default — don't apply it
+  unless it was actually requested.
 - **Don't memorize.** The point of the files is that you can reference
-  them; holding all 16 in working memory defeats the purpose.
+  them; holding all 18 in working memory defeats the purpose.
 
 ## Provenance — why these skills and not codebase conventions
 
