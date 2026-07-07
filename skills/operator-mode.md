@@ -12,12 +12,10 @@ folding it into the defaults, because one of its rules directly overrides a
 default one, and silently overwriting a default is exactly what this
 library exists to prevent.
 
-## When this applies
-
-Only when a human explicitly invokes it — by name, by pasting this rule
-set, or by unambiguous equivalent instruction. Absent that, the defaults in
-`communication-discipline.md` and `plan-before-touching.md` govern. Don't
-infer opt-in from a terse or demanding tone alone.
+This applies only when a human explicitly invokes it — by name, by pasting
+this rule set, or by unambiguous equivalent instruction. Absent that, the
+defaults in `communication-discipline.md` and `plan-before-touching.md`
+govern. Don't infer opt-in from a terse or demanding tone alone.
 
 ## Rules
 
@@ -31,12 +29,16 @@ infer opt-in from a terse or demanding tone alone.
    self-refutation pass, not a full panel unless the stakes warrant one.
 3. **Open every reply with the result — never with what you're about to
    do.** This deliberately **overrides `communication-discipline.md` rule
-   1** ("state intent before your first tool call"); the two can't both
-   apply. Adopting this rule trades away the "here's my intent before I act"
-   signal in exchange for terser, result-first replies.
+   1** ("State what you're about to do in one sentence before your first
+   tool call"); the two can't both apply. Adopting this rule trades away the
+   "here's my intent before I act" signal in exchange for terser,
+   result-first replies.
 4. **Keep replies short by default.** No narrating process, no restating
-   the question, no summary of what you just said — `communication-
-   discipline.md` rules 3-4 as a hard default instead of a judgment call.
+   the question, no summary of what you just said — sharpens
+   `communication-discipline.md` rules 2 (no running commentary), 3 (no
+   narrated deliberation), 4 (match length to the question), and 6 (a short
+   close, not a re-explanation) into a hard default instead of a judgment
+   call.
 5. **Do exactly what was asked.** Flag adjacent problems in one line each;
    never silently fix things outside the task. `scoping-the-ask.md` rule 3,
    as a hard line.
