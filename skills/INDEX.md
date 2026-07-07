@@ -22,9 +22,10 @@ bottom if you only have time for a few.
 | 13 | [`context-and-token-discipline.md`](context-and-token-discipline.md) | Efficiency rather than correctness; matters more on long sessions than short tasks. | ~680 | ~300–1,000 per instance (a redundant read or serialized call that didn't need to be) |
 | 14 | [`model-selection-discipline.md`](model-selection-discipline.md) | Matters the moment you're spawning subagents or a workflow — a wrong default tier/effort choice multiplies silently across every call in the fan-out. Narrower than #13 but the per-instance cost multiplier runs higher. | ~1,020 | ~500–5,000 per instance (an unneeded top-tier call, or a fleet run at the wrong tier throughout) |
 | 15 | [`workflow-orchestration-patterns.md`](workflow-orchestration-patterns.md) | Only relevant once multi-agent orchestration is in play, which itself should be rare (explicit opt-in) — narrow but important when it applies. | ~800 | ~10,000–50,000 (an unearned barrier or reflexive heavy fan-out, avoided) |
-| 16 | [`security-boundaries.md`](security-boundaries.md) | Critical when a request is actually dual-use or harmful, but that's a small fraction of requests — high stakes, low frequency. | ~560 | not token-denominated — this prevents harm, not rework |
-| 17 | [`async-scheduling-discipline.md`](async-scheduling-discipline.md) | The narrowest scope of the set (only matters for long-running/background work) — lowest read-it-now priority, but cheap and worth having on file. | ~730 | ~3,000–10,000+ (a sleep-poll loop's worth of repeated cache-miss reloads, avoided) |
-| 18 | [`operator-mode.md`](operator-mode.md) | Applies only when a human explicitly invokes it, and even then it governs style, not correctness. Narrowest scope on the list — but it overrides a default rule (#10), so it needs to be findable, not memorized. | ~780 | not really token-denominated — this is a communication-contract choice, not a failure it prevents |
+| 16 | [`cross-model-porting-discipline.md`](cross-model-porting-discipline.md) | Rare trigger (only when explicitly porting a system to a different model), but a port built from memorized conventions instead of live lookup can silently miscalibrate an entire system rather than one bug. Has a runnable counterpart, `.claude/workflows/port-ai-system.js`. | ~920 | ~5,000–30,000 (a full system silently misbehaving on the new target, discovered late) |
+| 17 | [`security-boundaries.md`](security-boundaries.md) | Critical when a request is actually dual-use or harmful, but that's a small fraction of requests — high stakes, low frequency. | ~560 | not token-denominated — this prevents harm, not rework |
+| 18 | [`async-scheduling-discipline.md`](async-scheduling-discipline.md) | The narrowest scope of the set (only matters for long-running/background work) — lowest read-it-now priority, but cheap and worth having on file. | ~730 | ~3,000–10,000+ (a sleep-poll loop's worth of repeated cache-miss reloads, avoided) |
+| 19 | [`operator-mode.md`](operator-mode.md) | Applies only when a human explicitly invokes it, and even then it governs style, not correctness. Narrowest scope on the list — but it overrides a default rule (#10), so it needs to be findable, not memorized. | ~780 | not really token-denominated — this is a communication-contract choice, not a failure it prevents |
 
 **How these numbers were made, and how much to trust them.** "Read cost" is
 measured (word count × ~1.3, the usual words→tokens ratio). "Saved per
@@ -47,9 +48,10 @@ separately instead of pre-multiplied away.
 - New to the project or the task is high-stakes/ambiguous: read 1-7 in full.
 - Mid-task, about to do something specific: jump to the one file that
   matches (delegating a subagent → #8, opening a PR → #12, choosing a model
-  tier before a fan-out → #14, writing a loop → #15).
-- If a human explicitly invokes a stricter operating contract, read #18 —
+  tier before a fan-out → #14, writing a loop → #15, porting a system to
+  another model → #16).
+- If a human explicitly invokes a stricter operating contract, read #19 —
   it overrides one of #10's defaults on purpose, so check it rather than
   assuming the default communication style still applies.
-- Don't try to hold all eighteen in working memory at once — that defeats
+- Don't try to hold all nineteen in working memory at once — that defeats
   the purpose of writing them down. Reference, don't memorize.

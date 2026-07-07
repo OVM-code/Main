@@ -9,22 +9,32 @@ from experience.
 
 ## What's in here
 
-Everything lives in [`skills/`](skills/): 18 skill files plus an index.
+Reference documentation lives in [`skills/`](skills/): 19 skill files plus
+an index. One capability also has a *runnable* counterpart in
+[`.claude/workflows/`](.claude/workflows/) — everything else in this repo
+is a discipline for a human or agent to follow, not something that executes.
 
-- **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 18
+- **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 19
   skills by quality bought per token spent reading, and tells you which to
   read in full versus which to look up on demand.
-- **18 skill files** — one discipline each: scoping requests, planning
+- **19 skill files** — one discipline each: scoping requests, planning
   before editing, verifying work instead of asserting it, judging blast
   radius before irreversible actions, root-cause debugging, delegating to
   subagents, multi-agent orchestration, tool selection, communication,
   code minimalism, resolving ambiguity, context/token budgeting,
   **which model tier and reasoning effort a step actually needs (and how
-  that choice minimizes token cost)**, GitHub/PR conduct, security
-  boundaries, async scheduling, a consolidated checklist of failure
-  patterns that cost real time, and **an explicit opt-in "operator mode"
-  contract** for users who want a stricter, terser default than this
-  library ships with.
+  that choice minimizes token cost)**, GitHub/PR conduct,
+  **porting an entire AI system to run on a different model** (researched
+  live, not from memorized conventions), security boundaries, async
+  scheduling, a consolidated checklist of failure patterns that cost real
+  time, and **an explicit opt-in "operator mode" contract** for users who
+  want a stricter, terser default than this library ships with.
+- **[`.claude/workflows/port-ai-system.js`](.claude/workflows/port-ai-system.js)**
+  — the runnable version of `skills/cross-model-porting-discipline.md`.
+  Invoke with `Workflow({name: 'port-ai-system', args: {sourceModel,
+  targetModel, system, outputPath?}})`: it researches both models' current
+  conventions live, builds a compatibility map, transforms the system, and
+  adversarially verifies the result before finalizing.
 
 ## Anatomy of a skill file
 
@@ -56,12 +66,17 @@ Every skill follows the same shape, on purpose:
   `model-selection-discipline.md` first — it's the rule set for which
   model tier and reasoning effort each step actually needs, so a fan-out
   doesn't default to the most expensive option for every call.
+- **Asked to make a system built for one model run on another:** read
+  `cross-model-porting-discipline.md`, then invoke
+  `.claude/workflows/port-ai-system.js` rather than hand-translating from
+  memory — model conventions go stale fast, and the workflow's Research
+  phase looks them up live for both models before anything gets rewritten.
 - **A human explicitly asks for a stricter, terser operating contract:**
   read `operator-mode.md`. It's opt-in and, on one point, deliberately
   overrides `communication-discipline.md`'s default — don't apply it
   unless it was actually requested.
 - **Don't memorize.** The point of the files is that you can reference
-  them; holding all 18 in working memory defeats the purpose.
+  them; holding all 19 in working memory defeats the purpose.
 
 ## Provenance — why these skills and not codebase conventions
 
@@ -88,3 +103,7 @@ project-specific skills alongside these and re-rank INDEX.md.
   is worse than no example, because it teaches confident fabrication.
 - When you add or remove a skill, update INDEX.md and re-rank — the index
   is the contract that keeps the library skimmable.
+- If a skill has a runnable counterpart in `.claude/workflows/`, keep the
+  two in sync — the skill file is the methodology a reader follows by hand;
+  the workflow is the same methodology automated. A rule change in one that
+  isn't reflected in the other is a bug, not a stylistic choice.
