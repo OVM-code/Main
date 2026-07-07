@@ -68,6 +68,12 @@ project-specific skills alongside these and re-rank INDEX.md.
 
 ## Maintaining the library
 
+The rules below are enforced mechanically: run `node check.mjs` (zero
+dependencies, Node 18+) before committing — CI runs it on every push. Full
+maintainer instructions, including playbooks for adding/editing/removing
+skills, live in [`CLAUDE.md`](CLAUDE.md), which Claude Code sessions load
+automatically.
+
 - Keep each skill under roughly a page. If a skill outgrows that, it's two
   skills.
 - Every rule must state its *why* — what breaks without it. A rule that's
