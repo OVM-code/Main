@@ -25,7 +25,8 @@ bottom if you only have time for a few.
 | 16 | [`cross-model-porting-discipline.md`](cross-model-porting-discipline.md) | Rare trigger (only when explicitly porting a system to a different model), but a port built from memorized conventions instead of live lookup can silently miscalibrate an entire system rather than one bug. Has a runnable counterpart, `.claude/workflows/port-ai-system.js`. | ~920 | ~5,000–30,000 (a full system silently misbehaving on the new target, discovered late) |
 | 17 | [`security-boundaries.md`](security-boundaries.md) | Critical when a request is actually dual-use or harmful, but that's a small fraction of requests — high stakes, low frequency. | ~560 | not token-denominated — this prevents harm, not rework |
 | 18 | [`async-scheduling-discipline.md`](async-scheduling-discipline.md) | The narrowest scope of the set (only matters for long-running/background work) — lowest read-it-now priority, but cheap and worth having on file. | ~730 | ~3,000–10,000+ (a sleep-poll loop's worth of repeated cache-miss reloads, avoided) |
-| 19 | [`operator-mode.md`](operator-mode.md) | Applies only when a human explicitly invokes it, and even then it governs style, not correctness. Narrowest scope on the list — but it overrides a default rule (#10), so it needs to be findable, not memorized. | ~780 | not really token-denominated — this is a communication-contract choice, not a failure it prevents |
+| 19 | [`prompt-elaboration-discipline.md`](prompt-elaboration-discipline.md) | Only fires on explicit invocation, but each use front-loads the questioning that would otherwise surface as rework after an under-specified prompt executed wrong. Has an invocable counterpart, `.claude/skills/elaborate/SKILL.md`. | ~960 | ~3,000–10,000 (an executor run built on a guessed spec, discarded and redone) |
+| 20 | [`operator-mode.md`](operator-mode.md) | Applies only when a human explicitly invokes it, and even then it governs style, not correctness. Narrowest scope on the list — but it overrides a default rule (#10), so it needs to be findable, not memorized. | ~780 | not really token-denominated — this is a communication-contract choice, not a failure it prevents |
 
 **How these numbers were made, and how much to trust them.** "Read cost" is
 measured (word count × ~1.3, the usual words→tokens ratio). "Saved per
@@ -49,9 +50,9 @@ separately instead of pre-multiplied away.
 - Mid-task, about to do something specific: jump to the one file that
   matches (delegating a subagent → #8, opening a PR → #12, choosing a model
   tier before a fan-out → #14, writing a loop → #15, porting a system to
-  another model → #16).
-- If a human explicitly invokes a stricter operating contract, read #19 —
+  another model → #16, elaborating a terse prompt on request → #19).
+- If a human explicitly invokes a stricter operating contract, read #20 —
   it overrides one of #10's defaults on purpose, so check it rather than
   assuming the default communication style still applies.
-- Don't try to hold all nineteen in working memory at once — that defeats
+- Don't try to hold all twenty in working memory at once — that defeats
   the purpose of writing them down. Reference, don't memorize.

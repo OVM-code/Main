@@ -9,15 +9,15 @@ from experience.
 
 ## What's in here
 
-Reference documentation lives in [`skills/`](skills/): 19 skill files plus
-an index. One capability also has a *runnable* counterpart in
-[`.claude/workflows/`](.claude/workflows/) — everything else in this repo
-is a discipline for a human or agent to follow, not something that executes.
+Reference documentation lives in [`skills/`](skills/): 20 skill files plus
+an index. Two capabilities also have *executable* counterparts under
+[`.claude/`](.claude/) — everything else in this repo is a discipline for a
+human or agent to follow, not something that executes.
 
-- **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 19
+- **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 20
   skills by quality bought per token spent reading, and tells you which to
   read in full versus which to look up on demand.
-- **19 skill files** — one discipline each: scoping requests, planning
+- **20 skill files** — one discipline each: scoping requests, planning
   before editing, verifying work instead of asserting it, judging blast
   radius before irreversible actions, root-cause debugging, delegating to
   subagents, multi-agent orchestration, tool selection, communication,
@@ -27,14 +27,26 @@ is a discipline for a human or agent to follow, not something that executes.
   **porting an entire AI system to run on a different model** (researched
   live, not from memorized conventions), security boundaries, async
   scheduling, a consolidated checklist of failure patterns that cost real
-  time, and **an explicit opt-in "operator mode" contract** for users who
-  want a stricter, terser default than this library ships with.
+  time, **elaborating a minimal prompt into a fully-specified one through
+  structured questioning**, and **an explicit opt-in "operator mode"
+  contract** for users who want a stricter, terser default than this
+  library ships with.
 - **[`.claude/workflows/port-ai-system.js`](.claude/workflows/port-ai-system.js)**
   — the runnable version of `skills/cross-model-porting-discipline.md`.
-  Invoke with `Workflow({name: 'port-ai-system', args: {sourceModel,
-  targetModel, system, outputPath?}})`: it researches both models' current
-  conventions live, builds a compatibility map, transforms the system, and
-  adversarially verifies the result before finalizing.
+  Invoke with `Workflow({scriptPath: '.claude/workflows/port-ai-system.js',
+  args: {sourceModel, targetModel, system, outputPath?}})`: it researches
+  both models' current conventions live, builds a compatibility map,
+  transforms the system, and adversarially verifies the result before
+  finalizing.
+- **[`.claude/skills/elaborate/SKILL.md`](.claude/skills/elaborate/SKILL.md)**
+  — the invocable version of `skills/prompt-elaboration-discipline.md`.
+  Invoke as `/elaborate <terse prompt>`: the agent questions you in
+  structured rounds until a completeness checklist is satisfied, assembles
+  a standalone prompt naming its recommended executor (Sonnet or Opus, with
+  the reason), then asks whether to run it, hand it over, or both. It runs
+  interactively in the main conversation — questioning can't be delegated
+  to a background workflow, because only the main agent can ask you
+  anything.
 
 ## Anatomy of a skill file
 
@@ -71,12 +83,17 @@ Every skill follows the same shape, on purpose:
   `.claude/workflows/port-ai-system.js` rather than hand-translating from
   memory — model conventions go stale fast, and the workflow's Research
   phase looks them up live for both models before anything gets rewritten.
+- **The user invokes `/elaborate` (or asks to have a terse prompt expanded
+  through questioning):** follow `.claude/skills/elaborate/SKILL.md` —
+  question in structured rounds against the completeness checklist in
+  `prompt-elaboration-discipline.md`, and never trigger it on ordinary
+  terse messages the user didn't ask to elaborate.
 - **A human explicitly asks for a stricter, terser operating contract:**
   read `operator-mode.md`. It's opt-in and, on one point, deliberately
   overrides `communication-discipline.md`'s default — don't apply it
   unless it was actually requested.
 - **Don't memorize.** The point of the files is that you can reference
-  them; holding all 19 in working memory defeats the purpose.
+  them; holding all 20 in working memory defeats the purpose.
 
 ## Provenance — why these skills and not codebase conventions
 
@@ -103,7 +120,8 @@ project-specific skills alongside these and re-rank INDEX.md.
   is worse than no example, because it teaches confident fabrication.
 - When you add or remove a skill, update INDEX.md and re-rank — the index
   is the contract that keeps the library skimmable.
-- If a skill has a runnable counterpart in `.claude/workflows/`, keep the
-  two in sync — the skill file is the methodology a reader follows by hand;
-  the workflow is the same methodology automated. A rule change in one that
-  isn't reflected in the other is a bug, not a stylistic choice.
+- If a skill has an executable counterpart under `.claude/` (a workflow
+  script or an invocable SKILL.md), keep the two in sync — the skill file
+  is the methodology a reader follows by hand; the counterpart is the same
+  methodology made invocable. A rule change in one that isn't reflected in
+  the other is a bug, not a stylistic choice.
