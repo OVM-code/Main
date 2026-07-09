@@ -9,18 +9,20 @@ from experience.
 
 ## What's in here
 
-Everything lives in [`skills/`](skills/): 16 skill files plus an index.
+Everything lives in [`skills/`](skills/): 17 skill files plus an index.
 
-- **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 16
+- **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 17
   skills by quality bought per token spent reading, and tells you which to
   read in full versus which to look up on demand.
-- **16 skill files** — one discipline each: scoping requests, planning
+- **17 skill files** — one discipline each: scoping requests, planning
   before editing, verifying work instead of asserting it, judging blast
   radius before irreversible actions, root-cause debugging, delegating to
-  subagents, multi-agent orchestration, tool selection, communication,
-  code minimalism, resolving ambiguity, context/token budgeting, GitHub/PR
-  conduct, security boundaries, async scheduling, and a consolidated
-  checklist of failure patterns that cost real time.
+  subagents, multi-agent orchestration, building end-to-end systems
+  (spec-first, parallel executor builds, staged integration), tool
+  selection, communication, code minimalism, resolving ambiguity,
+  context/token budgeting, GitHub/PR conduct, security boundaries, async
+  scheduling, and a consolidated checklist of failure patterns that cost
+  real time.
 
 ## Anatomy of a skill file
 
@@ -49,7 +51,7 @@ Every skill follows the same shape, on purpose:
   pre-flight checklist. Recognizing "this is pattern #6" mid-mistake is
   faster than reconstructing the right instinct from scratch.
 - **Don't memorize.** The point of the files is that you can reference
-  them; holding all 16 in working memory defeats the purpose.
+  them; holding all 17 in working memory defeats the purpose.
 
 ## Provenance — why these skills and not codebase conventions
 

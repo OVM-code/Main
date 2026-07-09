@@ -21,8 +21,9 @@ bottom if you only have time for a few.
 | 12 | [`github-pr-discipline.md`](github-pr-discipline.md) | High stakes (visible to other people) but narrow scope — only load this fully once you're actually touching PRs/issues. | ~710 | ~1,000–3,000 (undoing/reopening/re-describing a PR done wrong) |
 | 13 | [`context-and-token-discipline.md`](context-and-token-discipline.md) | Efficiency rather than correctness; matters more on long sessions than short tasks. | ~680 | ~300–1,000 per instance (a redundant read or serialized call that didn't need to be) |
 | 14 | [`workflow-orchestration-patterns.md`](workflow-orchestration-patterns.md) | Only relevant once multi-agent orchestration is in play, which itself should be rare (explicit opt-in) — narrow but important when it applies. | ~800 | ~10,000–50,000 (an unearned barrier or reflexive heavy fan-out, avoided) |
-| 15 | [`security-boundaries.md`](security-boundaries.md) | Critical when a request is actually dual-use or harmful, but that's a small fraction of requests — high stakes, low frequency. | ~560 | not token-denominated — this prevents harm, not rework |
-| 16 | [`async-scheduling-discipline.md`](async-scheduling-discipline.md) | The narrowest scope of the set (only matters for long-running/background work) — lowest read-it-now priority, but cheap and worth having on file. | ~730 | ~3,000–10,000+ (a sleep-poll loop's worth of repeated cache-miss reloads, avoided) |
+| 15 | [`building-e2e-systems.md`](building-e2e-systems.md) | Only triggers when a whole multi-component system is being built — rare, like #14 — but the failure it prevents (a monolithic single-context build that dies on context limits or lands as one unreviewable commit) is the costliest rework item on the list. | ~1,670 | ~20,000–100,000+ (a whole-system build redone in stages after the monolithic attempt collapses) |
+| 16 | [`security-boundaries.md`](security-boundaries.md) | Critical when a request is actually dual-use or harmful, but that's a small fraction of requests — high stakes, low frequency. | ~560 | not token-denominated — this prevents harm, not rework |
+| 17 | [`async-scheduling-discipline.md`](async-scheduling-discipline.md) | The narrowest scope of the set (only matters for long-running/background work) — lowest read-it-now priority, but cheap and worth having on file. | ~730 | ~3,000–10,000+ (a sleep-poll loop's worth of repeated cache-miss reloads, avoided) |
 
 **How these numbers were made, and how much to trust them.** "Read cost" is
 measured (word count × ~1.3, the usual words→tokens ratio). "Saved per
@@ -33,8 +34,8 @@ same way the rank column's reasoning was built. Treat it as a rough dial,
 not a budget line: two entries aren't token-denominated at all
 (`blast-radius-and-confirmation.md` can guard against unrecoverable loss;
 `security-boundaries.md` guards against harm, not wasted tokens), and
-`workflow-orchestration-patterns.md` has one of the largest per-trigger
-savings on the list yet still ranks #14 — the *rank* is frequency-adjusted
+`workflow-orchestration-patterns.md` and `building-e2e-systems.md` have the
+largest per-trigger savings on the list yet still rank #14–15 — the *rank* is frequency-adjusted
 (rare situation × huge cost still nets below a common situation × medium
 cost), but this column deliberately isn't, so you can see the two factors
 separately instead of pre-multiplied away.
@@ -44,6 +45,6 @@ separately instead of pre-multiplied away.
 - New to the project or the task is high-stakes/ambiguous: read 1-7 in full.
 - Mid-task, about to do something specific: jump to the one file that
   matches (delegating a subagent → #8, opening a PR → #12, writing a loop →
-  #14).
-- Don't try to hold all sixteen in working memory at once — that defeats the
-  purpose of writing them down. Reference, don't memorize.
+  #14, building a whole multi-component system → #15).
+- Don't try to hold all seventeen in working memory at once — that defeats
+  the purpose of writing them down. Reference, don't memorize.
