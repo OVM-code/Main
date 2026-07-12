@@ -9,7 +9,8 @@ from experience.
 
 ## What's in here
 
-Everything lives in [`skills/`](skills/): 16 skill files plus an index.
+Everything lives in [`skills/`](skills/): 16 skill files plus an index, and
+one packaged advisor skill.
 
 - **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 16
   skills by quality bought per token spent reading, and tells you which to
@@ -21,6 +22,16 @@ Everything lives in [`skills/`](skills/): 16 skill files plus an index.
   code minimalism, resolving ambiguity, context/token budgeting, GitHub/PR
   conduct, security boundaries, async scheduling, and a consolidated
   checklist of failure patterns that cost real time.
+- **[`skills/zero-to-one-advisor/`](skills/zero-to-one-advisor/)** — a
+  different kind of skill: a startup/strategy advisor persona grounded in
+  the frameworks of *Zero to One* (Peter Thiel with Blake Masters). Packaged
+  in the Claude Code Agent Skill format (a `SKILL.md` with YAML frontmatter
+  plus five reference files), so it can be copied into a project's
+  `.claude/skills/` directory and invoked directly. It runs a structured
+  advising workflow — intake, seven-questions audit, monopoly test,
+  distribution check, foundation audit, verdict — with each framework
+  (monopoly theory, secrets, definite optimism, the power law, the
+  distribution spectrum) paraphrased in its own reference file.
 
 ## Anatomy of a skill file
 
