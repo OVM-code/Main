@@ -9,7 +9,40 @@ from experience.
 
 ## What's in here
 
-Everything lives in [`skills/`](skills/): 16 skill files plus an index.
+Three pieces:
+
+- **[`skills/`](skills/)** — the discipline library: 16 skill files plus
+  an index (details below).
+- **[`.claude/agents/`](.claude/agents/)** — the **Fable advisory
+  system**: four general-purpose subagents built on the library's
+  disciplines, invocable in any Claude Code session on this repo.
+- **[`claude-projects/`](claude-projects/)** — the same four roles
+  packaged as instructions for claude.ai chat and Projects, so the
+  advisors work outside Claude Code too. See its README for setup.
+
+## The Fable advisory system
+
+Four roles, each owning one part of getting from question to action, in
+any domain (technical, business, personal):
+
+| Role | Owns | Deliverable |
+|---|---|---|
+| `fable-researcher` | What is true, what the options are | Cited research report with confidence tags |
+| `fable-advisor` | Which way to go | Decision memo with one recommendation, confidence, flip conditions |
+| `fable-planner` | How to get there | Dependency-ordered plan with milestones, risks, decision points |
+| `fable-critic` | What's wrong with the above | Adversarial critique with an unhedged verdict |
+
+Shared discipline, drawn from the skill library: clarify before working
+(each role returns questions instead of guessing when the brief is
+under-framed), verify rather than remember (load-bearing claims are
+searched and cited, tagged Confirmed/Reported/Inferred/Unknown), and every
+engagement ends in a written deliverable (default location:
+`deliverables/`). A typical chain is researcher → advisor → planner, with
+the critic reviewing before anything high-stakes is acted on.
+
+## The skill library
+
+[`skills/`](skills/) holds 16 skill files plus an index.
 
 - **[`skills/INDEX.md`](skills/INDEX.md)** — start here. Ranks all 16
   skills by quality bought per token spent reading, and tells you which to
